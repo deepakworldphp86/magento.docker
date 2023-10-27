@@ -248,10 +248,10 @@ services:
     container_name: portainer
     hostname: ${PORTAINER_HOST}
     restart: always
-#    volumes:
-#      - ./docker/portainer/etc/localtime:/etc/localtime:ro
-#      - ./docker/portainer/var/run/docker.sock:/var/run/docker.sock:ro
-#      - ./data-sync/portainer/portainer-data:/data
+    volumes:
+      - "./docker/portainer/etc/localtime:/etc/localtime:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./data-sync/portainer/portainer-data:/data"
     ports:
       - "9001:9000"
     networks:
