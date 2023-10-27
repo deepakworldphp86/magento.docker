@@ -23,3 +23,23 @@ PHPMYADMIN = http://localhost:8082/
 RABBITMQ =    http://localhost:15673/
 OPEN SEARCH = http://localhost:9400/
 MAGENTO URL = http://magento.docker/  - change url in .env
+
+#Delete docker container and images all
+#Docker Container
+docker rm -vf $(docker ps -aq)
+
+#Docker Images
+
+docker rmi -f $(docker images -aq)
+
+
+#Deploy Command
+
+docker exec -it -u root ea048cfbfc1e  /var/www/deploy.sh full
+
+docker exec -it -u root ea048cfbfc1e  /var/www/deploy.sh index
+
+docker exec -it -u root ea048cfbfc1e  /var/www/deploy.sh upgrade_content
+
+docker exec -it -u root ea048cfbfc1e  /var/www/deploy.sh permission
+
