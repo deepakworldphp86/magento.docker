@@ -1,0 +1,266 @@
+version: "3.1"
+services:
+  app:
+    build:
+      context: ./docker/
+      dockerfile: php8/php8.Dockerfile
+    env_file: .env
+    container_name: ${APP_NAME}-php8
+    hostname: ${PHP8_HOST_NAME}
+    ports:
+      - "9000:9000"
+    links:
+      - opensearch
+      - mysql
+      - mariadb
+      - rabbitmq    
+    depends_on:
+      - opensearch
+      - mysql
+      - mariadb
+      - rabbitmq      
+    volumes:
+      - "./public_html:/var/www/html/"
+      - "./env_sample:/var/www/.env"
+      - "./docker/scripts:/var/www/"
+      - ./docker/php8/config/custom.ini:/usr/local/etc/php8/conf.d/custom.ini
+    networks:
+      magento:
+        aliases:
+          - ${PHP8_HOST_NAME}       
+  nginx:
+    env_file: .env
+    image: ${NGINX_VERSION}
+    container_name: ${APP_NAME}-nginx
+    hostname: ${NGINX_HOST}
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - opensearch
+      - mysql
+      - mariadb
+      - rabbitmq   
+    depends_on:
+      - opensearch
+      - mysql
+      - mariadb
+      - rabbitmq   
+    volumes:
+      - "./public_html:/var/www/html"
+      - "./docker/nginx/conf:/etc/nginx/conf.d"
+    networks:
+      magento:
+        aliases:
+          - ${NGINX_HOST}        
+  mariadb:
+    build:
+      context: ./docker/
+      dockerfile: mariadb/mariadb.Dockerfile
+    hostname: ${MARIADB_HOST}
+    container_name: ${APP_NAME}-mariadb
+    #image: ${MARIADB_VERSION}
+    shm_size: ${MARIADB_SHM_SIZE}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MARIADB_DATABASE} 
+      MYSQL_USER: ${MARIADB_USER} 
+      MYSQL_PASSWORD=: ${MARIADB_PASSWORD}
+    ports:
+      - '3306:3306'
+    volumes:
+      - './data-sync/mariadb-db-sync:/var/lib/mysql'
+    healthcheck:
+      test: 'mysqladmin ping -h localhost -pmagento2'
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    networks:
+      magento:
+        aliases:
+          - ${MARIADB_HOST}
+  mysql:
+    container_name: ${APP_NAME}-mysql
+    hostname:  ${MYSQL_HOST}
+    image: ${MYSQL_VERSION}
+    shm_size: ${MYSQL_SHM_SIZE}
+    #command : --skip-grant-tables
+    command: mysqld --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_DATABASE: ${MAGENTO_DB_NAME} 
+      MYSQL_USER: ${MYSQL_USER} 
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PORT: ${MYSQL_PORT}
+      #MYSQL_HOST: mysql
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      #MYSQL_ENTRYPOINT_INITDB: ./mysql/docker-entrypoint-initdb.d
+    ports:
+      - '3307:3306'
+    volumes:
+      - './data-sync/mysql-db-sync:/var/lib/mysql'
+      - './docker/mysql/conf/:/etc/mysql/conf.d/'
+      - './docker/mysql-backup:/home/'
+    networks:
+      magento:
+        aliases:
+          - ${MYSQL_HOST}
+  opensearch:
+    hostname: ${OPENSEARCH_HOST_NAME}  
+    image: ${OPENSEARCH_STACK_VERSION}
+    container_name: ${APP_NAME}-opensearch
+    env_file: .env  
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9400:9200"
+      - "9500:9300"    
+    environment:
+      - cluster.name=docker-cluster
+      - discovery.type=single-node
+      - discovery.seed_hosts=opensearch
+      - bootstrap.memory_lock=true
+      - DISABLE_SECURITY_PLUGIN=true
+    networks:
+      magento:
+        aliases:
+          - ${OPENSEARCH_HOST_NAME}
+  redis-obj:
+    env_file: .env
+    image: redis:${REDIS_VERSION}
+    container_name: ${APP_NAME}-redis-obj
+    hostname:  ${MAGENTO_REDIS_OBJ_HOST}
+    ports:
+      - "6378:6379"
+    restart: always
+    networks:
+      magento:
+        aliases:
+          - ${MAGENTO_REDIS_OBJ_HOST}
+  redis-fpc:
+    env_file: .env
+    command: redis-server /usr/local/etc/redis/redis.conf
+    image: redis:${REDIS_VERSION}
+    container_name: ${APP_NAME}-redis-fpc
+    hostname:  ${MAGENTO_REDIS_FPC_HOST}
+    ports:
+      - "6391:6390"
+    restart: always
+    volumes:
+      - ./docker/redis/config/fpc.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      magento:
+        aliases:
+          - ${MAGENTO_REDIS_FPC_HOST}
+  redis-ses:
+    env_file: .env
+    command: redis-server /usr/local/etc/redis/redis.conf
+    image: redis:${REDIS_VERSION}
+    container_name: ${APP_NAME}-redis-ses
+    hostname:  ${MAGENTO_REDIS_SES_HOST}
+    ports:
+      - "6382:6382"
+    restart: always
+    volumes:
+      - ./docker/redis/config/ses.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      magento:
+        aliases:
+          - ${MAGENTO_REDIS_SES_HOST}  
+  rabbitmq:
+    env_file: .env
+    image: ${MAGENTO_RABBITMQ_VERSION}
+    container_name: ${APP_NAME}-rabbitmq
+    hostname:  ${MAGENTO_AMQP_HOST}
+    environment:
+      RABBITMQ_DEFAULT_USER: ${MAGENTO_AMQP_USER} 
+      RABBITMQ_DEFAULT_PASS: ${MAGENTO_AMQP_PASSWORD} 
+      RABBITMQ_DEFAULT_VHOST: ${MAGENTO_AMQP_VIRTUALHOST}
+      RABBITMQ_NODE_PORT: ${MAGENTO_AMQP_PORT}
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    restart: always
+    networks:
+      magento:
+        aliases:
+          - ${MAGENTO_AMQP_HOST}       
+  mailhog:
+    env_file: .env
+    image: ${MAILHOG_VERSION}
+    container_name: ${APP_NAME}-mailhog
+    hostname:  ${MAGENTO_MAILHOG_HOST}
+    ports:
+      - "1026:1025"
+      - "8026:8025"
+    networks:
+      magento:
+        aliases:
+          - ${MAGENTO_MAILHOG_HOST}     
+  phpmyadmin:
+    env_file: .env
+    image: ${PHPMYADMIN_VERSION}
+    container_name: ${APP_NAME}-phpmyadmin
+    hostname:  ${PHPMYADMIN_HOST}
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: ${MARIADB_HOST}
+      PMA_USER: ${MARIADB_ROOT_USER}
+      PMA_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    depends_on:
+      - mysql
+      - mariadb
+    ports:
+      - 8082:80
+    networks:
+      magento:
+        aliases:
+          - ${PHPMYADMIN_HOST}
+  jenkins:
+    build:
+      context: ./docker/
+      dockerfile: jenkins/jenkins.Dockerfile
+    env_file: .env
+    container_name: ${APP_NAME}-jenkins
+    hostname: ${JENKINS_HOST}
+    ports:
+      - "8087:8080"
+    links:
+      - opensearch
+      - mysql
+      - mariadb
+      - rabbitmq    
+    depends_on:
+      - opensearch
+      - mysql
+      - mariadb
+      - rabbitmq
+    volumes:
+      - "./data-sync/jenkins-data-sync:/var/jenkins_home"
+      - "./docker/jenkins/jenkins-docker-certs:/certs/client:ro"
+    networks:
+      magento:
+        aliases:
+          - ${JENKINS_HOST}
+  portainer:
+    image: ${PORTAINER_VERSION}
+    container_name: portainer
+    hostname: ${PORTAINER_HOST}
+    restart: always
+    volumes:
+      - "./docker/portainer/etc/localtime:/etc/localtime:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./data-sync/portainer/portainer-data:/data"
+    ports:
+      - "9001:9000"
+    networks:
+      magento:
+        aliases:
+          - ${PORTAINER_HOST}
+volumes:
+  mariadb-db-sync: {  }
+  mysql-db-sync: {  }
+networks:
+  magento:
+    driver: bridge

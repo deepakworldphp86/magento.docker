@@ -21,7 +21,7 @@ services:
       - rabbitmq      
     volumes:
       - "./public_html:/var/www/html/"
-      - "./env_sample:/var/www/.env"
+      - "./docker/env/env_sample:/var/www/.env"
       - "./docker/scripts:/var/www/"
       - ./docker/php8/config/custom.ini:/usr/local/etc/php8/conf.d/custom.ini
     networks:
