@@ -154,7 +154,10 @@ JENKINS_HOST=jenkins.magento.docker
 PORTAINER_VERSION=portainer/portainer-ce:latest
 PORTAINER_HOST=portainer.magento.docker
 
-
+#=====================COMPOSER=======================================#
+COMPOSER_VERSION=2.2.9
+PUBLIC_KEY=**********************
+PRIVATE_KEY=***********************
 
 
 #=======================VARNISH=======================================#
