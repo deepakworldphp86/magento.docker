@@ -1,23 +1,14 @@
+#===================================DOCKER==================#
 APP_NAME=magento_docker
 MAGE_INSTALLATION_FOLDER=magento.docker
-#MYSQL_ROOT_PASSWORD=rootpass
-# Versions
-MAGE_OS_MIRRORS=https://repo.magento.com/
-MAGE_OS_VERSION=magento/project-community-edition
-NGINX_VERSION=1.18
+
+
+#======================PHP8==================================#
 PHP_VERSION=8.1
-MAGENTO_VERSION=2.4.6-p3
-MYSQL_VERSION=8.0
-REDIS_VERSION=6
-ELASTICSEARCH_VERSION=elasticsearch:8.9.2
-
-
-# PHP8
 PHP8_HOST_NAME=php8.magento.docker
-# PHP8
-PHP7_HOST_NAME=php7.magento.docker
 
-# MySQL
+
+#=======================MYSQL================================#
 MYSQL_ROOT_USER=root
 MYSQL_ROOT_PASSWORD=magento@123
 MYSQL_USER=magento
@@ -30,12 +21,13 @@ MYSQL_VERSION=mysql:8.0
 MYSQL_SHM_SIZE=2g
 
 
-# Nginx
+#========================NGINX===============================#
+NGINX_VERSION=1.18
 NGINX_HOST=nginx.magento.docker
 NGINX_VERSION=nginx:latest
 
 
-# MariaDb
+#========================MARIADB=============================#
 MARIADB_ROOT_USER=root
 MARIADB_ROOT_PASSWORD=magento@123
 MARIADB_USER=magento
@@ -46,7 +38,15 @@ MARIADB_PORT=3306
 MARIADB_HOST=mariadb.magento.docker 
 MARIADB_VERSION=mariadb:10.4.31
 MARIADB_SHM_SIZE=2g
+
+#======================MAGENTO=============================#
+
 # Magento (required) - see https://devdocs.magento.com/guides/v2.2/install-gde/install/cli/install-cli-install.html
+# Versions
+MAGE_OS_MIRRORS=https://repo.magento.com/
+MAGE_OS_VERSION=magento/project-community-edition
+MAGENTO_VERSION=2.4.6-p3
+
 MAGENTO_ADMIN_FIRSTNAME=mage
 MAGENTO_ADMIN_LASTNAME=Os
 MAGENTO_ADMIN_EMAIL=dkmagento@gmail.com
@@ -76,14 +76,8 @@ MAGENTO_USE_SECURE_ADMIN=0
 # MAGENTO_CLEANUP_DATABASE
 # MAGENTO_DB_INIT_STATEMENTS
 
-# Magento (optional, Magento Commerce only)
-# MAGENTO_AMQP_HOST
-# MAGENTO_AMQP_PORT
-# MAGENTO_AMQP_USER
-# MAGENTO_AMQP_PASSWORD
-# MAGENTO_AMQP_VIRTUALPORT
-# MAGENTO_AMQP_SSL
-
+#=========================================REDIS==================================#
+REDIS_VERSION=6
 # Magento (optional, Redis)
 MAGENTO_REDIS_OBJ_SERVER=redis-obj
 MAGENTO_REDIS_OBJ_HOST=redisobj.magento.docker
@@ -117,18 +111,18 @@ MAGENTO_REDIS_SES_DATABASE=0
 #MAGENTO_REDIS_SES_MIN_LIFETIME
 #MAGENTO_REDIS_SES_MAX_LIFETIME
 
-#Elastic search
+#=========================Elastic search=============================#
 
 #  ELASTICSEARCH_HOST=elasticsearch
 #  ELASTICSEARCH_ENGINE=elasticsearch7
 #  ELASTICSEARCH_PORT=9200
 #  COMPOSE_PROJECT_NAME=elasticsearch
-#  ELASTIC_STACK_VERSION=elasticsearch:8.9.2
+#  ELASTICSEARCH_VERSION=elasticsearch:8.9.2
 #  JAVA_OPTS=-Xmx2G -Xms2G
 #  ELASTIC_HOST_NAME=elasticsearch.magento.docker
 #  ELS_MEM_LIMIT=3g
 
- #Open-search
+ #=======================OPEN-SEARCH===============================#
  SEARCH_ENGINE=opensearch
  SEARCH_HOST=opensearch.magento.docker
  OPENSEARCH_STACK_VERSION=opensearchproject/opensearch:1.2.4
@@ -136,39 +130,34 @@ MAGENTO_REDIS_SES_DATABASE=0
  OPENSEARCH_MEM_LIMIT=3g
  OPENSEARCH_PORT=9400
 
-  #Phpmyadmin
+#=======================PHPMYADMIN================================#
  PHPMYADMIN_VERSION=phpmyadmin/phpmyadmin
  PHPMYADMIN_HOST=phpmyadmin.magento.docker
 
- #Mailhog
+ #======================MAILHOG==================================#
  MAILHOG_VERSION=mailhog/mailhog:v1.0.0
  MAGENTO_MAILHOG_HOST=mailhog.magento.docker
 
- #RABBIT MQ
+ #======================RABBIT MQ================================#
  MAGENTO_RABBITMQ_VERSION=rabbitmq:3.8.9-management
  MAGENTO_AMQP_HOST=rabbitmq.magento.docker
  MAGENTO_AMQP_PORT=5672
  MAGENTO_AMQP_USER=magento
  MAGENTO_AMQP_PASSWORD=magento
  MAGENTO_AMQP_VIRTUALHOST=magento
+#MAGENTO_AMQP_SSL
 
- #JENKINS
+ #====================JENKINS======================================#
 JENKINS_HOST=jenkins.magento.docker
 
- #PORTAINER
+#=====================PORTAINER=====================================#
 PORTAINER_VERSION=portainer/portainer-ce:latest
 PORTAINER_HOST=portainer.magento.docker
 
 
- #MAGENTO_AMQP_SSL=
- #COMPOSE_FILE=docker-compose.elasticsearch.yml
 
+
+#=======================VARNISH=======================================#
 # Magento (optional, Varnish)
 #VCL_CONFIG=/data/varnish.vcl
 #VARNISHD_PARAMS=-p default_ttl=3600 -p default_grace=3600 -p feature=+esi_ignore_https -p feature=+esi_disable_xml_check
-
-    # environment:
-    #   RABBITMQ_DEFAULT_USER: ${MAGENTO_AMQP_USER} 
-    #   RABBITMQ_DEFAULT_PASS: ${MAGENTO_AMQP_PASSWORD} 
-    #   RABBITMQ_DEFAULT_VHOST: ${MAGENTO_AMQP_VIRTUALHOST}
-    #   RABBITMQ_NODE_PORT: ${MAGENTO_AMQP_PORT}

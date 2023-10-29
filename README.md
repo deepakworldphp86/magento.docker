@@ -43,3 +43,15 @@ docker exec -it -u root ea048cfbfc1e  /var/www/deploy.sh upgrade_content
 
 docker exec -it -u root ea048cfbfc1e  /var/www/deploy.sh permission
 
+composer.phar global config http-basic.repo.magento.com <public_key> <private_key>
+
+Now in Magento root or open ~/.composer/auth.json and put following lines
+
+{
+    "http-basic": {
+        "repo.magento.com": {
+            "username":"<your public key>",
+            "password":"<your private key>"
+        }
+    }
+}
