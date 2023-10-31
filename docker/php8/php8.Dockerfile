@@ -81,7 +81,7 @@ ENV PHP_PM_MAX_SPARE_SERVERS 6
 ENV APP_MAGE_MODE default
 RUN rm -rf /var/lib/apt/lists/*
 
-COPY ../../env.sample /var/www/.env
+COPY ../env/env_sample /var/www/.env
 COPY ../scripts/*.sh /var/www/
 RUN chown www-data:www-data /var/www/*.sh && chmod +x /var/www/*.sh
 

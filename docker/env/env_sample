@@ -156,8 +156,8 @@ PORTAINER_HOST=portainer.magento.docker
 
 #=====================COMPOSER=======================================#
 COMPOSER_VERSION=2.2.9
-PUBLIC_KEY=**********************
-PRIVATE_KEY=***********************
+PUBLIC_KEY=cb5827454c5bc0aefa23f4e950600c0a
+PRIVATE_KEY=9b5d26b053d8959a9af0038fe4be8390
 
 
 #=======================VARNISH=======================================#
