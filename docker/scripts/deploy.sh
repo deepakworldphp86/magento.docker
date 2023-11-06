@@ -12,6 +12,7 @@ then
 	echo "*********************** setup static content deploy - setup:static-content:deploy -f  *******************" 
 	php -d memory_limit=-1 /var/www/html/${MAGE_INSTALLATION_FOLDER}/bin/magento setup:static-content:deploy -f
 	echo "*********************** Permission ***********************************************"
+  	          chmod -R 777 /var/www/html/${MAGE_INSTALLATION_FOLDER}/
 fi
 
 

@@ -2,6 +2,13 @@
 APP_NAME=magento_docker
 MAGE_INSTALLATION_FOLDER=magento.docker
 
+#===========Magento Admin User ============================#
+
+ADMIN_USER=dk
+ADMIN_FIRST_NAME=admin
+ADMIN_LAST_NAME=admin
+ADMIN_PASSWORD=admin@123
+ADMIN_EMAIL=admin@gmail.com
 
 #======================PHP8==================================#
 PHP_VERSION=8.1

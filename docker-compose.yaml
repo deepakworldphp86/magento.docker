@@ -23,7 +23,7 @@ services:
       - "./public_html:/var/www/html/"
       - "./docker/env/env_sample:/var/www/.env"
       - "./docker/scripts:/var/www/"
-      - ./docker/php8/config/custom.ini:/usr/local/etc/php8/conf.d/custom.ini
+      - ./docker/php8/config/custom.ini:/usr/local/etc/php/conf.d/custom.ini
     networks:
       magento:
         aliases:
@@ -208,6 +208,12 @@ services:
       PMA_HOST: ${MARIADB_HOST}
       PMA_USER: ${MARIADB_ROOT_USER}
       PMA_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      UPLOAD_LIMIT: 500M
+      MEMORY_LIMIT: 2G
+      MAX_EXECUTION_TIME: 600
+      PMA_ARBITRARY: 1
+    volumes:
+      - ./docker/phpmyadmin/config/php.ini:/usr/local/etc/php/conf.d/custom.ini
     depends_on:
       - mysql
       - mariadb
