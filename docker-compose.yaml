@@ -23,7 +23,8 @@ services:
       - "./public_html:/var/www/html/"
       - "./docker/env/env_sample:/var/www/.env"
       - "./docker/scripts:/var/www/"
-      - ./docker/php8/config/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./docker/php8/config/custom.ini:/usr/local/etc/php/conf.d/custom.ini,
+      - ./docker/php8/config/docker-php-ext-xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
     networks:
       magento:
         aliases:
