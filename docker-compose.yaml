@@ -123,6 +123,8 @@ services:
       - discovery.seed_hosts=opensearch
       - bootstrap.memory_lock=true
       - DISABLE_SECURITY_PLUGIN=true
+      - "cluster.routing.allocation.disk.threshold_enabled=false"
+      - "index.blocks.read_only_allow_delete"
     networks:
       magento:
         aliases:
