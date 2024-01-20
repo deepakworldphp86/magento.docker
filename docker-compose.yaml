@@ -214,7 +214,7 @@ services:
       UPLOAD_LIMIT: 500M
       MEMORY_LIMIT: 2G
       MAX_EXECUTION_TIME: 600
-      PMA_ARBITRARY: 1
+      #PMA_ARBITRARY: 1
     volumes:
       - ./docker/phpmyadmin/config/php.ini:/usr/local/etc/php/conf.d/custom.ini
     depends_on:
